@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button btnResultados = (Button) findViewById(R.id.btnResultados);
         btnResultados.setOnClickListener(this);
+
+        Button btnEstatistica = (Button) findViewById(R.id.btnEstatistica);
+        btnEstatistica.setOnClickListener(this);
     }
 
     @Override
@@ -43,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent it = new Intent(this, ResultadoActivity.class);
                 it.putExtra("sorteios", (Serializable) sorteios);
                 startActivity(it);
+                break;
+            case R.id.btnEstatistica:
+                Intent it2 = new Intent(this, EstatisticaActivity.class);
+                it2.putExtra("sorteios", (Serializable) sorteios);
+                startActivity(it2);
                 break;
         }
     }

@@ -3,4 +3,5 @@
     <string name="loteria">Mega Sena</string>
     <string name="btn">Sortear</string>
     <string name="btn_resultados">Resultados</string>
+    <string name="btn_estatistica">Estatística</string>
 </resources>
