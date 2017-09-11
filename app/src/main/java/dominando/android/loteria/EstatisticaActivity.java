@@ -8,9 +8,14 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.prefs.Preferences;
 
@@ -40,52 +45,64 @@ public class EstatisticaActivity extends AppCompatActivity {
             }
         }
 
-        Set<Map.Entry<Integer, Integer>> maisSorteados = new TreeSet<>(
-                new Comparator<Map.Entry<Integer, Integer>>() {
-                    public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
-                        return -o1.getKey().compareTo(o2.getKey());}});
-
-        Set<Map.Entry<Integer, Integer>> menosSorteados = new TreeSet<>(
-                new Comparator<Map.Entry<Integer, Integer>>() {
-                    public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
-                        return o1.getKey().compareTo(o2.getKey());}});
-
-
-        for (Map.Entry<Integer, Integer> valor : contagem.entrySet()
-             ) {
-
-            if (maisSorteados.size() == 6) {
-                break;
-            } else {
-                maisSorteados.add(valor);
-            }
+        Map<Integer, Integer> maisSorteados = sortMaisSorteados(contagem);
+        for (Integer i : maisSorteados.keySet()) {
+            textoMaisSorteados += i + " apareceu " + maisSorteados.get(i) + " vez(es)\n";
         }
 
-        for (Map.Entry<Integer, Integer> valor : contagem.entrySet()
-                ) {
-
-            if (menosSorteados.size() == 6) {
-                break;
-            } else {
-                menosSorteados.add(valor);
-            }
-        }
-
-        for (Map.Entry<Integer, Integer> num :
-             maisSorteados) {
-            textoMaisSorteados += num.getKey() + " apareceu " + num.getValue() + " vez(es)\n";
-        }
-
-        for (Map.Entry<Integer, Integer> num :
-                menosSorteados) {
-            textoMenosSorteados += num.getKey() + " apareceu " + num.getValue() + " vez(es)\n";
+        Map<Integer, Integer> menosSorteados = sortMenosSorteados(contagem);
+        for (Integer i : menosSorteados.keySet()) {
+            textoMenosSorteados += i + " apareceu " + menosSorteados.get(i) + " vez(es)\n";
         }
 
         TextView textEstatistica = (TextView) findViewById(R.id.estatistica);
         textEstatistica.setText("Mais Sorteados: \n" + textoMaisSorteados + "\n\nMenos Sorteados: \n" + textoMenosSorteados);
 
         TextView textPercentual = (TextView) findViewById(R.id.percentual);
-        textPercentual.setText("Percentual de ganhadores: " + (int)((double)totalGanhadores / sorteios.size() * 100) + "%");
+        textPercentual.setText("Total de sorteios: " + sorteios.size() +"\nPercentual de ganhadores: " + (int)((double)totalGanhadores / sorteios.size() * 100) + "%");
+    }
 
+    private static HashMap sortMaisSorteados(Map<Integer, Integer> map) {
+        List<Integer> list = new LinkedList(map.entrySet());
+
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
+            }
+        });
+
+
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+
+            if (sortedHashMap.size() == 6) {
+                break;
+            }
+        }
+        return sortedHashMap;
+    }
+
+    private static HashMap sortMenosSorteados(Map<Integer, Integer> map) {
+        List<Integer> list = new LinkedList(map.entrySet());
+
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return -((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
+            }
+        });
+
+
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+
+            if (sortedHashMap.size() == 6) {
+                break;
+            }
+        }
+        return sortedHashMap;
     }
 }
